@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans https://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.1.xsd">
+	
+	<!-- Root Context: defines shared resources visible to all other web components -->
+	<bean id="dataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource">
+		<property name="driverClass" value="oracle.jdbc.driver.OracleDriver"/>
+		<property name="jdbcUrl" value="jdbc:oracle:thin:@localhost:1521:xe"/>
+		<property name="user" value="jsp"/>
+		<property name="password" value="jsp"/>
+		<property name="maxPoolSize" value="100"/>
+		<property name="maxIdleTime" value="600"/>
+	</bean>
+	
+	<bean id="sqlSessionFactoryBean" class="org.mybatis.spring.SqlSessionFactoryBean">
+		<property name="dataSource" ref="dataSource"/>
+		<property name="configLocation" value="classpath:config/mybatis-config.xml"/>
+		<property name="mapperLocations">
+			<list>
+				<value>classpath:config/sqlmap-po.xml</value>
+				<value>classpath:config/sqlmap-customer.xml</value>
+				<value>classpath:config/sqlmap-seller.xml</value>
+				<value>classpath:config/sqlmap-query.xml</value>
+				<value>classpath:config/sqlmap-review.xml</value>
+				<value>classpath:config/sqlmap-product.xml</value>
+				<value>classpath:config/sqlmap-cart.xml</value>
+				<value>classpath:config/sqlmap-notice.xml</value>
+				<value>classpath:config/sqlmap-faq.xml</value>
+				<value>classpath:config/sqlmap-cenQuery.xml</value>
+			</list>
+		</property>
+	</bean>
+	
+	<bean id="sqlSessionTemplate" class="org.mybatis.spring.SqlSessionTemplate">
+		<constructor-arg ref="sqlSessionFactoryBean"/>
+	</bean>
+	
+	<!-- gmail  mail sender-->
+    <bean id="mailSender" class ="org.springframework.mail.javamail.JavaMailSenderImpl" >
+        <property name="host" value="smtp.gmail.com" />
+        <property name="port" value="587" />
+        <property name="defaultEncoding" value="utf-8"/>
+        <property name="username" value="2jotestyong@gmail.com" />
+        <property name="password" value="ngxkboupjeepjpfp" />
+        <property name="javaMailProperties">
+            <props>
+                <prop key="mail.smtp.starttls.enable">true</prop>
+                <prop key="mail.smtp.auth">true</prop>
+            </props>
+        </property>      
+    </bean>
+    
+    <bean id="email" class="com.spring.webprj.common.Email"></bean>
+    <bean id="emailSender" class="com.spring.webprj.common.EmailSender"></bean>
+	
+	<!-- 파일처리를 위한 멀티파트 빈을 등록 -->
+	<bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver" />
+	
+	<!-- 패키지 -->
+   <context:component-scan base-package="com.spring.webprj.util" />
+</beans>

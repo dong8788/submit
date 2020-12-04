@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE configuration PUBLIC "-//mybatis.org//DTD Config 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-config.dtd">
+
+<configuration>
+
+	<!-- 마이바티스 동작 관련 설정 -->
+	<settings>
+		<setting name="cacheEnabled" value="false"/>
+		<setting name="useGeneratedKeys" value="false"/>
+		
+		<!-- 자바 이름규칙은 camel을 사용. _를 사용하는 경우 매핑 문제를 해결하기 위한 설정 -->
+		<setting name="mapUnderscoreToCamelCase" value="true"/>
+		
+	</settings>
+	 <typeAliases>
+		<typeAlias type="com.spring.webprj.domain.PoVo" alias="PoVo"/>
+		<typeAlias type="com.spring.webprj.domain.CustomerVo" alias="CustomerVo"/>
+		<typeAlias type="com.spring.webprj.domain.SellerVo" alias="SellerVo"/>
+		<typeAlias type="com.spring.webprj.domain.QueryVo" alias="QueryVo"/>
+		<typeAlias type="com.spring.webprj.domain.ReviewVo" alias="ReviewVo"/>
+		<typeAlias type="com.spring.webprj.domain.ProductVo" alias="ProductVo"/>
+		<typeAlias type="com.spring.webprj.domain.PoProductVo" alias="PoProductVo"/>
+		<typeAlias type="com.spring.webprj.domain.CartProductVo" alias="CartProductVo"/>
+		<typeAlias type="com.spring.webprj.domain.CartVo" alias="CartVo"/>
+		<typeAlias type="com.spring.webprj.domain.QueryProductVo" alias="QueryProductVo"/>
+		<typeAlias type="com.spring.webprj.domain.NoticeVo" alias="NoticeVo"/>
+		<typeAlias type="com.spring.webprj.domain.FaqVo" alias="FaqVo"/>
+		<typeAlias type="com.spring.webprj.domain.UserCenQueryVo" alias="UserCenQueryVo"/>
+		<typeAlias type="com.spring.webprj.domain.CenQueryVo" alias="CenQueryVo"/>
+		<typeAlias type="com.spring.webprj.common.SearchVO" alias="SearchVO"/>
+		<typeAlias type="com.spring.webprj.common.Criteria" alias="Criteria"/>
+	</typeAliases>
+</configuration>
+
+
+
+

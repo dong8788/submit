@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+    
+<mapper namespace="CenQueryDao">
+
+	<!-- 중복되는 동적 SQL문에 대한 처리 -->
+	<sql id="search">
+		<!-- 동적 SQL 구문 -->
+		<if test="condition == 'title'">
+			WHERE title LIKE '%' || #{keyword} || '%'
+		</if>
+		<if test="condition == 'content'">
+			WHERE content LIKE '%' || #{keyword} || '%'
+		</if>
+		<if test="condition == 'titleContent'">
+			WHERE (title LIKE '%' || #{keyword} || '%' OR content LIKE '%' || #{keyword} || '%')
+		</if>
+	</sql>
+	
+	<insert id="insert" parameterType="CenQueryVo">
+		INSERT INTO CENQUERY (CENQUERYSEQ, OPEN, QUERYTYPE, CUSSEQ, SELLERSEQ, CONTENT, TITLE)
+		VALUES (CENQ_SEQ.NEXTVAL, #{open}, #{queryType}, #{cusSeq}, #{sellerSeq}, #{content}, #{title})
+	</insert>
+	
+	<select id="list" parameterType="SearchVO" resultType="UserCenQueryVo">
+		SELECT * FROM( 
+		SELECT ROW_NUMBER() OVER(ORDER BY CENQUERYSEQ DESC) AS RNUM, a.* FROM(
+		SELECT CENQUERY.CENQUERYSEQ, CENQUERY.OPEN, 
+		CENQUERY.QUERYTYPE, CENQUERY.CUSSEQ, CENQUERY.SELLERSEQ, CENQUERY.CONTENT, CENQUERY.TITLE, CENQUERY.REGDATE, 
+		CENQUERY.REPLY, CUSTOMER.CUSID, SELLER.BUSINESSNAME, SELLER.ID FROM CENQUERY 
+		LEFT JOIN CUSTOMER ON CENQUERY.CUSSEQ = CUSTOMER.CUSSEQ 
+		LEFT JOIN SELLER ON CENQUERY.SELLERSEQ = SELLER.SELLERSEQ
+		) a <include refid="search"/>
+		) WHERE RNUM between #{rowStart} and #{rowEnd}
+		
+	</select>
+	
+	<select id="listCount" resultType="int">
+		SELECT COUNT(*) FROM (
+		SELECT * FROM(
+		SELECT ROW_NUMBER() OVER(ORDER BY CENQUERYSEQ DESC) AS RNUM, CENQUERY.CENQUERYSEQ, CENQUERY.OPEN, 
+		CENQUERY.QUERYTYPE, CENQUERY.CUSSEQ, CENQUERY.SELLERSEQ, CENQUERY.CONTENT, CENQUERY.TITLE, CENQUERY.REGDATE, 
+		CENQUERY.REPLY, CUSTOMER.CUSID, SELLER.BUSINESSNAME, SELLER.ID FROM CENQUERY 
+		LEFT JOIN CUSTOMER ON CENQUERY.CUSSEQ = CUSTOMER.CUSSEQ 
+		LEFT JOIN SELLER ON CENQUERY.SELLERSEQ = SELLER.SELLERSEQ
+		) <include refid="search"/>
+		) 
+	</select>
+
+	<select id="listByOpen" resultType="CenQueryVo">
+		SELECT *
+		FROM CENQUERY
+		WHERE OPEN = '공개글'
+	</select>
+
+	<select id="read" parameterType="int" resultType="CenQueryVo">
+		SELECT *
+		FROM CENQUERY
+		WHERE CENQUERYSEQ=#{cenQuerySeq} 
+	</select>
+
+	<update id="update" parameterType="CenQueryVo">
+		UPDATE CENQUERY
+		SET QUERYTYPE=#{queryType}, CONTENT=#{content}, TITLE=#{title}, REPLY=#{reply, jdbcType=VARCHAR}
+		WHERE CENQUERYSEQ=#{cenQuerySeq} 
+	</update>
+
+	<delete id="delete" parameterType="CenQueryVo">
+		DELETE FROM CENQUERY
+		WHERE CENQUERYSEQ=#{cenQuerySeq} 
+	</delete>
+
+
+</mapper>

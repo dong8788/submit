@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="PoDao">
+
+		<!-- 중복되는 동적 SQL문에 대한 처리 -->
+		<!-- poStat변경 -->
+		<sql id="poStatCh">
+			<!-- 동적 SQL 구문 -->
+			<if test="poStat == 'orderconfirm'">
+				CONFIRMDATE=SYSDATE, POSTAT=#{poStat}
+			</if>
+			<if test="poStat == 'orderreject'">
+				REJECTDATE=SYSDATE, POSTAT=#{poStat}
+			</if>
+			<if test="poStat == 'ship'">
+				SHIPDATE=SYSDATE, POSTAT=#{poStat}, COURIER=#{courier}, SHIPPINGNUM=#{shippingNum}
+			</if>
+			<if test="poStat == 'shipsuccess'">
+				RECIPIENTDATE=SYSDATE, POSTAT=#{poStat}
+			</if>
+			<if test="poStat == 'confirm'">
+				FCONFIRMDATE=SYSDATE, POSTAT=#{poStat}
+			</if>
+		</sql>
+
+        <select id="list" resultType="PoProductVo">
+                select * from PURCHASEORDER po, PRODUCT prod WHERE po.PRODSEQ = prod.PRODSEQ AND po.CUSSEQ=#{cusSeq}   
+        </select>
+		<!-- 주문 조회 -->
+        <select id="getPo" parameterType="int" resultType="PoVo">
+                select * from PURCHASEORDER where PONUM = #{poNum}
+        </select>
+        
+       	<!-- 주문 생성 -->
+        <insert id="insert" parameterType="PoVo">
+                insert into PURCHASEORDER (PONUM, CUSSEQ, PRODSEQ, POQUANTITY,RECIPIENT,RECIPIENTPHONE,RECIPIENTADDR,SHIPMEMO,BILLINGAMOUNT,PAYMETHOD, POSTAT, PAYNUM)
+                values (PONUM_SEQ.nextval,#{cusSeq}, #{prodSeq}, #{poQuantity}, #{recipient},#{recipientPhone}, #{recipientAddr},#{shipMemo}, #{billingAmount}, #{payMethod}, #{poStat}, #{payNum})
+        </insert>
+        
+        <!-- 신규주문 확인 -->
+         <select id="newOrderlist" resultType="PoProductVo">
+                select * from PURCHASEORDER po, PRODUCT prod WHERE po.PRODSEQ = prod.PRODSEQ AND prod.SELLERSEQ=#{sellerSeq} AND po.POSTAT = 'newOrder'
+        </select>
+        
+        <!-- 발송필요주문 확인 -->
+         <select id="confirmOrderlist" resultType="PoProductVo">
+                select * from PURCHASEORDER po, PRODUCT prod WHERE po.PRODSEQ = prod.PRODSEQ AND prod.SELLERSEQ=#{sellerSeq} AND po.POSTAT = 'orderconfirm'
+        </select>
+        
+        <!-- 배송중또는 배송완료 주문 확인 -->
+         <select id="shipOrderlist" resultType="PoProductVo">
+                select * from PURCHASEORDER po, PRODUCT prod WHERE po.PRODSEQ = prod.PRODSEQ AND prod.SELLERSEQ=#{sellerSeq} AND po.POSTAT = 'ship' OR po.POSTAT='shipsuccess'
+        </select>
+        
+        <!-- 발송필요주문 확인 -->
+         <select id="poFconfirmOrderlist" resultType="PoProductVo">
+                select * from PURCHASEORDER po, PRODUCT prod WHERE po.PRODSEQ = prod.PRODSEQ AND prod.SELLERSEQ=#{sellerSeq} AND po.POSTAT = 'confirm'
+        </select>
+
+        <!-- PO상태 변경 --> 
+        <update id="update" parameterType="PoVo">
+                UPDATE PURCHASEORDER set <include refid="poStatCh"/> 
+                where PONUM=#{poNum}
+        </update>
+
+  <!--       수령완료 
+        <update id="recipientupdate" parameterType="PoVo">
+                update PURCHASEORDER set RECIPIENTDATE=sysdate
+                where PONUM=#{poNum}
+        </update>
+
+        구매확정완료 
+        <update id="finalconfirmupdate" parameterType="PoVo">
+                update PURCHASEORDER set FCONFIRMDATE=sysdate
+                where PONUM=#{poNum}
+        </update>
+
+        구매거절 
+        <update id="rejectupdate" parameterType="PoVo">
+                update PURCHASEORDER set REJECTDATE=sysdate
+                where PONUM=#{poNum}
+        </update>
+        
+		취소
+        <delete id="delete" parameterType="PoVo"> 
+                delete from PURCHASEORDER where PONUM=#{poNum}
+        </delete> -->
+        
+</mapper>

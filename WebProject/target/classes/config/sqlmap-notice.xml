@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="NoticeDao">
+	<!-- 중복되는 동적 SQL문에 대한 처리 -->
+	<sql id="search">
+		<!-- 동적 SQL 구문 -->
+		<if test="condition == 'title'">
+			WHERE title LIKE '%' || #{keyword} || '%'
+		</if>
+		<if test="condition == 'content'">
+			WHERE content LIKE '%' || #{keyword} || '%'
+		</if>
+		<if test="condition == 'titleContent'">
+			WHERE (title LIKE '%' || #{keyword} || '%' OR content LIKE '%' || #{keyword} || '%')
+		</if>
+	</sql>
+
+        <select id="selectAll" resultType="NoticeVo">
+        SELECT NOTICESEQ, CONTENT, TITLE, REGDATE, READCOUNT FROM(
+                select ROW_NUMBER() OVER(ORDER BY NOTICESEQ DESC) AS RNUM, NOTICESEQ, CONTENT, TITLE, REGDATE, READCOUNT from NOTICE <include refid="search"/>
+                )
+        WHERE RNUM BETWEEN #{rowStart} AND #{rowEnd}
+        </select>
+        
+        <select id="listCount" resultType="int">
+		SELECT COUNT(*) FROM (
+		SELECT NOTICESEQ, CONTENT, TITLE, REGDATE FROM(
+                select ROW_NUMBER() OVER(ORDER BY NOTICESEQ DESC) AS RNUM, NOTICESEQ, CONTENT, TITLE, REGDATE from NOTICE <include refid="search"/>
+                )
+		)
+		</select>
+        
+        <select id="selectBySeq" parameterType="int" resultType="NoticeVo">
+                select * from NOTICE where NOTICESEQ = #{noticeSeq}
+        </select>
+        
+        <insert id="insert" parameterType="NoticeVo">
+                insert into NOTICE("NOTICESEQ", "NOTICECATEGORY", "CONTENT", "TITLE", "REGDATE")
+					values(NOTICE_SEQ.nextval, #{noticeCategory}, #{content}, #{title}, SYSDATE)
+        </insert>
+        
+        <update id="update" parameterType="NoticeVo">
+                update NOTICE set
+                	NOTICECATEGORY = #{noticeCategory},
+                	CONTENT = #{content},
+                	TITLE = #{title},
+                	REGDATE = SYSDATE
+				where NOTICESEQ = #{noticeSeq}
+        </update>
+        
+        <update id="updateCount" parameterType="int">
+        		update NOTICE set READCOUNT = READCOUNT + 1 where NOTICESEQ = #{noticeSeq}
+        </update>
+
+        <delete id="delete" parameterType="int">
+                delete from NOTICE where NOTICESEQ = #{noticeSeq}
+        </delete>
+        
+</mapper>
+
+
+
+

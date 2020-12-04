@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="SellerDao">
+
+	<select id="selectAll" resultType="SellerVo">
+		SELECT * FROM SELLER
+	</select>
+
+	<select id="select" resultType="SellerVo">
+		SELECT * FROM SELLER WHERE
+		ID=#{id}
+	</select>
+
+	<select id="checkSellerId" resultType="int">
+		SELECT COUNT(*) FROM
+		SELLER WHERE ID=#{id}
+	</select>
+
+	<insert id="insert" parameterType="SellerVo">
+		INSERT INTO
+		SELLER("SELLERSEQ", "BUSINESSNAME", "NAME", "PHONE", "ADDR", "EMAIL",
+		"ID", "PASSWORD", "BUSINESSNUM")
+		VALUES (SELLERSEQ.nextval,	#{businessName}, #{name}, #{phone}, #{addr, jdbcType=VARCHAR}, #{email}, #{id},
+		#{password}, #{businessNum})
+	</insert>
+
+
+	<select id="sellerIdChk" resultType="int">
+		SELECT COUNT(*) FROM SELLER
+		WHERE ID = #{id}
+	</select>
+
+</mapper>

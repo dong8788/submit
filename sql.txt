@@ -1,0 +1,207 @@
+create table CUSTOMER(
+	
+	"CUSSEQ" 	number primary key,
+	"CUSID"		varchar2(50) NOT NULL UNIQUE,
+	"PASSWORD" 	varchar(50) NOT NULL,
+	"NAME" 		varchar2(50) NOT NULL,
+	"EMAIL"                 varchar2(50) NOT NULL UNIQUE,
+	"PHONE"		varchar2(50) NOT NULL,
+	"JOINDATE" 	DATE DEFAULT SYSDATE
+
+);
+
+--CUSSEQ 시퀀스 설정
+CREATE SEQUENCE "CUSSEQ" START WITH 1 INCREMENT BY 1 MAXVALUE 99999;
+
+DROP TABLE CUSTOMER;
+
+-- 주문상세내역 SQL
+CREATE TABLE PURCHASEORDER(
+	PONUM NUMBER PRIMARY KEY,
+	CUSSEQ NUMBER,
+	PRODSEQ VARCHAR2(20),
+	POQUANTITY NUMBER,
+	PAYNUM VARCHAR2(50),
+	RECIPIENT VARCHAR2(20),
+	RECIPIENTPHONE VARCHAR2(20),
+	RECIPIENTADDR VARCHAR2(20),
+    SHIPMEMO VARCHAR2(20),
+	COURIER VARCHAR2(20),
+	SHIPPINGNUM VARCHAR2(20),
+	POSTAT VARCHAR2(20),
+	BILLINGAMOUNT NUMBER,
+	ORORDERDATE DATE DEFAULT SYSDATE,
+	CONFIRMDATE DATE,
+	SHIPDATE DATE,
+	RECIPIENTDATE DATE,
+	FCONFIRMDATE DATE,
+	REJECTDATE DATE,
+	PAYMETHOD VARCHAR2(20)
+);
+-- 결제내역 SEQUENCE
+CREATE SEQUENCE PAYNUM_SEQ
+INCREMENT BY 1
+START WITH 1
+MINVALUE 1
+NOMAXVALUE
+NOCYCLE;
+
+CREATE SEQUENCE PONUM_SEQ
+INCREMENT BY 1
+START WITH 1
+MINVALUE 1
+NOMAXVALUE
+NOCYCLE;
+
+alter table PURCHASEORDER modify(PAYNUM VARCHAR2(50));
+
+DROP TABLE PURCHASEORDER;
+
+SELECT *FROM PURCHASEORDER;
+
+COMMIT;
+
+-- 공지사항 FAQ 장바구니 테이블
+create sequence "FAQ_SEQ" start with 1 increment by 1 NOMAXVALUE NOCYCLE;
+create sequence "CART_SEQ" start with 1 increment by 1 NOMAXVALUE NOCYCLE;
+
+-- 공지사항
+create table "NOTICE" (
+    "NOTICESEQ" number primary key,
+    "NOTICECATEGORY" varchar2(30),
+    "CONTENT" varchar2(1000),
+    "TITLE" varchar2(255),
+    "REGDATE" date default sysdate
+);
+
+INSERT INTO NOTICE (NOTICESEQ, NOTICECATEGORY, CONTENT, TITLE) VALUES (NOTICE_SEQ.NEXTVAL, '판매자', '대한민국 숙박대전', '숙박대전 공고');
+
+SELECT * FROM NOTICE;
+
+-- 공지사항 Seq
+create sequence "NOTICE_SEQ" start with 1 increment by 1 NOMAXVALUE NOCYCLE;
+
+create table "FAQ" (
+    "FAQSEQ" number,
+    "FAQCATEGRY" varchar2(30),
+    "QUERY" varchar2(1000),
+    "REPLY" varchar2(1000),
+    "REGDATE" date default sysdate
+);
+
+-- 장바구니 정보
+create table CART (
+	CARTSEQ NUMBER PRIMARY KEY,
+	CUSSEQ number,
+	PRODSEQ number,
+	POQUANTITY number
+);
+
+INSERT INTO CART (CARTSEQ, CUSSEQ, PRODSEQ, POQUANTITY) 
+VALUES (CART_SEQ.NEXTVAL, '23', '6', '2');
+
+SELECT * FROM CART;
+
+DROP TABLE CART;
+
+COMMIT;
+
+create sequence "CART_SEQ" start with 1 increment by 1 NOMAXVALUE NOCYCLE;
+
+-- 상품평
+create sequence "REVIEWSEQ" start with 1 increment by 1 maxvalue 99999;
+
+create table "REVIEW"(
+   "REVIEWSEQ"   number primary key,
+   "RPODSEQ"   number,
+   "CUSID"      VARCHAR2(50)     NOT NULL,
+   "TITLE"      varchar2(50)   NOT NULL,
+   "CONTENT"   varchar2(500)   NOT NULL,
+   "REGDATE"   DATE DEFAULT    sysdate
+);
+
+
+-- 상품문의사항
+--query 수정
+create sequence "QUERYSEQ" start with 1 increment by 1 maxvalue 99999;
+
+create table "QUERY"(
+	"QUERYSEQ"	number primary key,
+    "OPEN"      varchar(20) NOT NULL,
+	"PRODSEQ"    number		NOT NULL,
+	"CUSSEQ"	NUMBER		NOT NULL,
+	"TITLE"		varchar2(50)	NOT NULL,
+	"CONTENT"	varchar2(500)	NOT NULL,
+	"QREGDATE"	DATE DEFAULT 	sysdate,
+	"REPLY"		varchar2(500)
+);
+
+insert into "QUERY" ("QUERYSEQ", "OPEN", "PRODSEQ", "CUSID", "TITLE", "CONTENT", "REPLY")
+values (QUERYSEQ.nextval, '공개글', 5, 'dong', 'title', 'content', 'reply');
+
+DROP TABLE QUERY;
+
+SELECT * FROM QUERY;
+
+--- 고객센터 문의
+SELECT * FROM CENQUERY;
+
+create table CENQUERY(
+CENQUERYSEQ NUMBER,
+OPEN varchar2(20),
+QUERYTYPE varchar2(50),
+CUSSEQ NUMBER,
+SELLERSEQ NUMBER,
+CONTENT varchar2(1000),
+TITLE varchar2(100),
+REGDATE date default sysdate,
+REPLY varchar2(1000)
+);
+
+INSERT INTO CENQUERY (CENQUERYSEQ, OPEN, QUERYTYPE, CUSSEQ, CONTENT, TITLE, REPLY) VALUES (CENQ_SEQ.NEXTVAL, '공개', '가입', '23', '가입절차가 알고 싶어요', '회원가입', '회원가입하세요');
+
+COMMIT;
+
+
+--- 제품정보
+create table PRODUCT(
+PRODSEQ NUMBER,
+SELLERSEQ NUMBER,
+CATEGORY varchar2(50),
+PRODNAME varchar2(100),
+PRODINFO varchar2(1000),
+PRICE number not null,
+DISCOUNT number DEFAULT 0,
+STOCKNUMBER NUMBER DEFAULT 99999,
+SHIPPINGCHARGE NUMBER,
+PHOTOURL VARCHAR2(200),
+REGDATE date default sysdate,
+UPDATEDATE date
+);
+
+DROP TABLE PRODUCT;
+
+SELECT * FROM PRODUCT;
+
+create sequence "PRODSEQ" start with 1 increment by 1 maxvalue 99999; 
+
+
+---판매자 정보
+create sequence "SELLERSEQ" start with 1 increment by 1 maxvalue 99999;
+
+create table "SELLER"(
+	"SELLERSEQ"	number primary key,
+	"BUSINESSNAME"	varchar2(100) UNIQUE,
+	"NAME" 		varchar2(50),
+	"PHONE"		varchar2(50),
+	"ADDR"		varchar2(50),
+	"EMAIL"		varchar2(20) UNIQUE,
+	"ID"		varchar2(50) UNIQUE,
+	"PASSWORD"	varchar2(100),
+	"JOINDATE"	date default sysdate,
+	"BUSINESSNUM"	nvarchar2(100) UNIQUE
+);
+
+SELECT * FROM SELLER;
+
+DROP TABLE SELLER;
