@@ -31,7 +31,7 @@
       <tr><td>내용</td><td><input type="text" name="content"></td></tr>
    </table>
    <input type="hidden" name="prodSeq" value="${product.prodSeq}">
-   <input type="hidden" name="cusId" value="${cusId}">
+   <input type="hidden" name="cusSeq" value="${cusSeq}">
    <input type="submit" value="리뷰 등록">
 
 </form>

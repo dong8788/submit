@@ -125,8 +125,8 @@ public class MyPageController {
         int cartSize = cartservice.select(((CustomerVo)session.getAttribute("login")).getCusSeq()).size();
         model.addAttribute("cartSize", cartSize);
         model.addAttribute("product", prodservice.getProd(prodSeq));
-        String id = ((CustomerVo)session.getAttribute("login")).getCusId();
-        model.addAttribute("cusId", id);
+        int cusSeq = ((CustomerVo)session.getAttribute("login")).getCusSeq();
+        model.addAttribute("cusSeq", cusSeq);
         return "mypage/reviewWrite";
 	}
 	   

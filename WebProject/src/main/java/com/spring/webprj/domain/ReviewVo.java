@@ -6,7 +6,7 @@ public class ReviewVo {
 
 	private int reviewSeq;
 	private int prodSeq;
-	private String cusId;
+	private int cusSeq;
 	private int score;
 	private String title;
 	private String content;
@@ -21,11 +21,11 @@ public class ReviewVo {
 	public int getProdSeq() {
 		return prodSeq;
 	}
-	public void setProdSeq(int prodId) {
+	public void setProdSeq(int prodSeq) {
 		this.prodSeq = prodSeq;
 	}
-	public String getCusId() {
-		return cusId;
+	public int getCusSeq() {
+		return cusSeq;
 	}
 	public void setScore(int score) {
 		this.score = score;
@@ -33,8 +33,8 @@ public class ReviewVo {
 	public int getScore() {
 		return score;
 	}
-	public void setCusId(String cusId) {
-		this.cusId = cusId;
+	public void setCusSeq(int cusSeq) {
+		this.cusSeq = cusSeq;
 	}
 	public String getTitle() {
 		return title;
@@ -56,7 +56,7 @@ public class ReviewVo {
 	}
 	@Override
 	public String toString() {
-		return "ReviewVo [reviewSeq=" + reviewSeq + ", prodSeq=" + prodSeq + ", cusId=" + cusId + ", title=" + title
+		return "ReviewVo [reviewSeq=" + reviewSeq + ", prodSeq=" + prodSeq + ", cusSeq=" + cusSeq + ", title=" + title
 				+ ", content=" + content + ", regDate=" + regDate + "]";
 	}
 	

@@ -12,8 +12,8 @@
 	</select>	
 	
 	<insert id="reviewInsert" parameterType="ReviewVo">
-		insert into REVIEW (reviewseq, prodseq, cusid, score, title, content, regdate)
-		values (reviewseq.nextVal, #{prodSeq}, #{cusId}, #{score}, #{title}, #{content}, sysdate)
+		insert into REVIEW (reviewseq, prodseq, cusseq, score, title, content, regdate)
+		values (reviewseq.nextVal, #{prodSeq}, #{cusSeq}, #{score}, #{title}, #{content}, sysdate)
 	</insert>
 	
 	<update id="reviewUpdate" parameterType="ReviewVo">

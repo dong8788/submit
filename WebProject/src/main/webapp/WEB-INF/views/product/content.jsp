@@ -259,7 +259,7 @@
 										</div>
 									<div class="review">
 										<div class="review_date">${review.regDate }</div>
-										<div class="user_name">${ review.cusId }</div>
+										<div class="user_name">${ review.cusSeq }</div>
 										<p>${review.content }</p>
 									</div>
 									</c:forEach>
