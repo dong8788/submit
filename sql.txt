@@ -44,7 +44,7 @@ INCREMENT BY 1
 START WITH 1
 MINVALUE 1
 NOMAXVALUE
-NOCYCLE;
+NOCYCLE; -- 결제 정보 받으면서 삭제함(sequence 사용안함) 
 
 CREATE SEQUENCE PONUM_SEQ
 INCREMENT BY 1
@@ -61,9 +61,6 @@ SELECT *FROM PURCHASEORDER;
 
 COMMIT;
 
--- 공지사항 FAQ 장바구니 테이블
-create sequence "FAQ_SEQ" start with 1 increment by 1 NOMAXVALUE NOCYCLE;
-create sequence "CART_SEQ" start with 1 increment by 1 NOMAXVALUE NOCYCLE;
 
 -- 공지사항
 create table "NOTICE" (
@@ -71,7 +68,8 @@ create table "NOTICE" (
     "NOTICECATEGORY" varchar2(30),
     "CONTENT" varchar2(1000),
     "TITLE" varchar2(255),
-    "REGDATE" date default sysdate
+    "REGDATE" date default sysdate,
+    "READCOUNT" NUMBER DEFAULT 0
 );
 
 INSERT INTO NOTICE (NOTICESEQ, NOTICECATEGORY, CONTENT, TITLE) VALUES (NOTICE_SEQ.NEXTVAL, '판매자', '대한민국 숙박대전', '숙박대전 공고');
@@ -88,6 +86,8 @@ create table "FAQ" (
     "REPLY" varchar2(1000),
     "REGDATE" date default sysdate
 );
+
+create sequence "FAQ_SEQ" start with 1 increment by 1 NOMAXVALUE NOCYCLE;
 
 -- 장바구니 정보
 create table CART (
@@ -114,7 +114,8 @@ create sequence "REVIEWSEQ" start with 1 increment by 1 maxvalue 99999;
 create table "REVIEW"(
    "REVIEWSEQ"   number primary key,
    "RPODSEQ"   number,
-   "CUSID"      VARCHAR2(50)     NOT NULL,
+   "CUSSEQ"      NUMBER     NOT NULL,
+   "SCORE"	NUMBER	NOT NULL,
    "TITLE"      varchar2(50)   NOT NULL,
    "CONTENT"   varchar2(500)   NOT NULL,
    "REGDATE"   DATE DEFAULT    sysdate
@@ -147,36 +148,38 @@ SELECT * FROM QUERY;
 SELECT * FROM CENQUERY;
 
 create table CENQUERY(
-CENQUERYSEQ NUMBER,
-OPEN varchar2(20),
-QUERYTYPE varchar2(50),
-CUSSEQ NUMBER,
-SELLERSEQ NUMBER,
-CONTENT varchar2(1000),
-TITLE varchar2(100),
-REGDATE date default sysdate,
-REPLY varchar2(1000)
+    CENQUERYSEQ NUMBER,
+    OPEN varchar2(20),
+    QUERYTYPE varchar2(50),
+    CUSSEQ NUMBER,
+    SELLERSEQ NUMBER,
+    CONTENT varchar2(1000),
+    TITLE varchar2(100),
+    REGDATE date default sysdate,
+    REPLY varchar2(1000)
 );
 
 INSERT INTO CENQUERY (CENQUERYSEQ, OPEN, QUERYTYPE, CUSSEQ, CONTENT, TITLE, REPLY) VALUES (CENQ_SEQ.NEXTVAL, '공개', '가입', '23', '가입절차가 알고 싶어요', '회원가입', '회원가입하세요');
 
 COMMIT;
 
+create sequence "CENQ_SEQ" start with 1 increment by 1 maxvalue 99999;
+
 
 --- 제품정보
 create table PRODUCT(
-PRODSEQ NUMBER,
-SELLERSEQ NUMBER,
-CATEGORY varchar2(50),
-PRODNAME varchar2(100),
-PRODINFO varchar2(1000),
-PRICE number not null,
-DISCOUNT number DEFAULT 0,
-STOCKNUMBER NUMBER DEFAULT 99999,
-SHIPPINGCHARGE NUMBER,
-PHOTOURL VARCHAR2(200),
-REGDATE date default sysdate,
-UPDATEDATE date
+    PRODSEQ NUMBER,
+    SELLERSEQ NUMBER,
+    CATEGORY varchar2(50),
+    PRODNAME varchar2(100),
+    PRODINFO VARCHAR2(4000),
+    PRICE number not null,
+    DISCOUNT number DEFAULT 0,
+    STOCKNUMBER NUMBER DEFAULT 99999,
+    SHIPPINGCHARGE NUMBER,
+    PHOTOURL VARCHAR2(200),
+    REGDATE date default sysdate,
+    UPDATEDATE date
 );
 
 DROP TABLE PRODUCT;
@@ -193,9 +196,9 @@ create table "SELLER"(
 	"SELLERSEQ"	number primary key,
 	"BUSINESSNAME"	varchar2(100) UNIQUE,
 	"NAME" 		varchar2(50),
-	"PHONE"		varchar2(50),
-	"ADDR"		varchar2(50),
-	"EMAIL"		varchar2(20) UNIQUE,
+	"PHONE"		varchar2(100),
+	"ADDR"		varchar2(200),
+	"EMAIL"		varchar2(50) UNIQUE,
 	"ID"		varchar2(50) UNIQUE,
 	"PASSWORD"	varchar2(100),
 	"JOINDATE"	date default sysdate,
