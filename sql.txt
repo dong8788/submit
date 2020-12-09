@@ -113,9 +113,9 @@ create sequence "REVIEWSEQ" start with 1 increment by 1 maxvalue 99999;
 
 create table "REVIEW"(
    "REVIEWSEQ"   number primary key,
-   "RPODSEQ"   number,
+   "PRODSEQ"   number,
    "CUSSEQ"      NUMBER     NOT NULL,
-   "SCORE"	NUMBER	NOT NULL,
+   "SCORE"      NUMBER      NOT NULL,
    "TITLE"      varchar2(50)   NOT NULL,
    "CONTENT"   varchar2(500)   NOT NULL,
    "REGDATE"   DATE DEFAULT    sysdate
